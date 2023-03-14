@@ -28,21 +28,15 @@ app.post('/send', (req, res) => {
   const msg = `1`;
   const msgHash = toHex(keccak256(Buffer.from(msg)));
 
-  const r = Buffer.from(signature.slice(2, 66), 'hex');
-  const s = Buffer.from(signature.slice(66), 'hex');
-  const v = parseInt(signature.slice(0, 2), 16);
+  const v = parseInt(signature.slice(0, 2), 16) - 48; // Subtract 48 to convert ASCII to integer
 
-  console.log('R:', r.toString('hex'));
-  console.log('S:', s.toString('hex'));
-  console.log('V:', v);
-
-  // recovery id is 0 or 1 because we are using secp256k1
-  const publicKey = secp.recoverPublicKey(Buffer.from(msgHash), signature, 0);
-  console.log(publicKey);
+  const publicKey = secp.recoverPublicKey(msgHash, signature, v);
+  console.log(toHex(publicKey));
 
   const pubKey =
     '0435591d7d9c6ccffe7e42207a962e152420972a6254a9a129e5ebcf9966027387fc9a4e9a4b68d3f9df0edc61bea67c33432e201a808623e780ae96d80b6ca506';
-  const verifySignature = secp.verify(signature, msgHash, pubKey);
+
+  const verifySignature = secp.verify(signature, msgHash, publicKey);
   if (verifySignature) {
     signatureIsValid = true;
   }
