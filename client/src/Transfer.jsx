@@ -18,6 +18,7 @@ function Transfer({ address, setBalance }) {
         sender: address,
         amount: parseInt(sendAmount),
         recipient,
+        signature,
       });
       setBalance(balance);
     } catch (ex) {

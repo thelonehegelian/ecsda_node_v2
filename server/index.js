@@ -19,13 +19,16 @@ app.get('/balance/:address', (req, res) => {
 });
 
 app.post('/send', (req, res) => {
-  const { sender, recipient, amount } = req.body;
+  let signatureIsValid = false;
+  const { sender, recipient, amount, signature } = req.body;
 
   setInitialBalance(sender);
   setInitialBalance(recipient);
 
   if (balances[sender] < amount) {
     res.status(400).send({ message: 'Not enough funds!' });
+  } else if (!signatureIsValid) {
+    res.status(400).send({ message: 'Invalid signature!' });
   } else {
     balances[sender] -= amount;
     balances[recipient] += amount;
