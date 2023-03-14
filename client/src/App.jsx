@@ -1,11 +1,12 @@
-import Wallet from "./Wallet";
-import Transfer from "./Transfer";
-import "./App.scss";
-import { useState } from "react";
+import Wallet from './Wallet';
+import Transfer from './Transfer';
+import './App.scss';
+import { useState } from 'react';
+import CreateSignature from './CreateSignature';
 
 function App() {
   const [balance, setBalance] = useState(0);
-  const [address, setAddress] = useState("");
+  const [address, setAddress] = useState('');
 
   return (
     <div className="app">
@@ -16,6 +17,7 @@ function App() {
         setAddress={setAddress}
       />
       <Transfer setBalance={setBalance} address={address} />
+      <CreateSignature />
     </div>
   );
 }
