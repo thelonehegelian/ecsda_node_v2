@@ -33,7 +33,9 @@ app.post('/send', (req, res) => {
   const publicKey = secp.recoverPublicKey(msgHash, signature, v);
   // verify that the sender address and the address recovered from the public key match
   const address = `0x${toHex(publicKey.slice(-20))}`;
-  console.log(address, sender);
+
+  console.log('address', address);
+  console.log('sender', sender);
 
   // compare address to sender
   if (address === sender) {
