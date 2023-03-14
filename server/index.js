@@ -5,7 +5,6 @@ const port = 3042;
 const secp = require('ethereum-cryptography/secp256k1');
 const { keccak256 } = require('ethereum-cryptography/keccak');
 const { toHex } = require('ethereum-cryptography/utils');
-// const { ecrecover } = require('ethereum-cryptography');
 
 app.use(cors());
 app.use(express.json());
@@ -25,23 +24,22 @@ app.get('/balance/:address', (req, res) => {
 app.post('/send', (req, res) => {
   let signatureIsValid = false;
   const { sender, recipient, amount, signature } = req.body;
-  const msg = `1`;
+  // @todo - validate the signature length
+  const msg = `${amount},${recipient}`;
   const msgHash = toHex(keccak256(Buffer.from(msg)));
 
   const v = parseInt(signature.slice(0, 2), 16) - 48; // Subtract 48 to convert ASCII to integer
 
   const publicKey = secp.recoverPublicKey(msgHash, signature, v);
-  console.log(toHex(publicKey));
+  // verify that the sender address and the address recovered from the public key match
+  const address = `0x${toHex(publicKey.slice(-20))}`;
+  console.log(address, sender);
 
-  const pubKey =
-    '0435591d7d9c6ccffe7e42207a962e152420972a6254a9a129e5ebcf9966027387fc9a4e9a4b68d3f9df0edc61bea67c33432e201a808623e780ae96d80b6ca506';
-
-  const verifySignature = secp.verify(signature, msgHash, publicKey);
-  if (verifySignature) {
-    signatureIsValid = true;
+  // compare address to sender
+  if (address === sender) {
+    signatureIsValid = secp.verify(signature, msgHash, publicKey);
   }
 
-  console.log(verifySignature);
   setInitialBalance(sender);
   setInitialBalance(recipient);
 
