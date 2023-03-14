@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const port = 3042;
+const secp = require('ethereum-cryptography/secp256k1');
+const { keccak256 } = require('ethereum-cryptography/keccak');
+const { toHex } = require('ethereum-cryptography/utils');
 
 app.use(cors());
 app.use(express.json());
@@ -21,7 +24,17 @@ app.get('/balance/:address', (req, res) => {
 app.post('/send', (req, res) => {
   let signatureIsValid = false;
   const { sender, recipient, amount, signature } = req.body;
+  const msg = `1`;
+  const msgHash = toHex(keccak256(Buffer.from(msg)));
+  console.log(msgHash);
+  const publicKey =
+    '0435591d7d9c6ccffe7e42207a962e152420972a6254a9a129e5ebcf9966027387fc9a4e9a4b68d3f9df0edc61bea67c33432e201a808623e780ae96d80b6ca506';
+  const verifySignature = secp.verify(signature, msgHash, publicKey);
+  if (verifySignature) {
+    signatureIsValid = true;
+  }
 
+  console.log(verifySignature);
   setInitialBalance(sender);
   setInitialBalance(recipient);
 
