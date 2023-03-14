@@ -9,6 +9,7 @@ function CreateSignature() {
   const createSig = async (evt) => {
     evt.preventDefault();
     try {
+      // remove spaces from data
       const messageBytes = new TextEncoder().encode(data);
       const msgHash = keccak256(messageBytes);
       const sig = await secp.sign(msgHash, privateKey);

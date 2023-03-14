@@ -3,6 +3,7 @@ import Transfer from './Transfer';
 import './App.scss';
 import { useState } from 'react';
 import CreateSignature from './CreateSignature';
+import Instructions from './Instructions';
 
 function App() {
   const [balance, setBalance] = useState(0);
@@ -18,6 +19,7 @@ function App() {
       />
       <Transfer setBalance={setBalance} address={address} />
       <CreateSignature />
+      <Instructions />
     </div>
   );
 }
